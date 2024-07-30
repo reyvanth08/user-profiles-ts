@@ -23,5 +23,3 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
-# user-profiles-ts
-A SPA which includes lazy loading and CRUD operations
