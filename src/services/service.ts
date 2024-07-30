@@ -11,4 +11,22 @@ export default {
     getUsers() {
         return api.get("/users");
     },
+
+    getImages(userId: string) {
+        return api.get(`/users/${userId}/images`);
+    },
+
+    addImage(
+        userId: string,
+        image: {
+            name: string;
+            imageURL: string;
+        }
+    ) {
+        return api.post(`/users/${userId}/images`, image);
+    },
+
+    deleteImage(userId: string, imageId: string) {
+        return api.delete(`/users/${userId}/images/${imageId}`);
+    },
 };
