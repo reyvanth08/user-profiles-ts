@@ -36,7 +36,9 @@ export default defineComponent({
 
 <template>
     <div class="user-card-list">
-        <h1 class="header">Users</h1>
+        <div class="header-container-user-cards">
+            <h1 class="header">User Directory</h1>
+        </div>
         <div v-if="loading" class="loader">Loading...</div>
         <div class="user-cards">
             <UserCard v-for="user in users" :key="user.id" :user="user" />

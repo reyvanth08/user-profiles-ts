@@ -23,6 +23,9 @@ export default defineComponent({
 
 		const newImage = reactive({ name: '', imageURL: '' });
 
+		const successMessage = ref('');
+		const errorMessage = ref('');
+
 		onMounted(async () => {
 			loading.value = true;
 			try {
@@ -38,11 +41,19 @@ export default defineComponent({
 		});
 
 		const addImage = async () => {
+			if (!newImage.name || !newImage.imageURL) {
+				successMessage.value = '';
+				errorMessage.value = 'Both image name and URL are required.';
+				return;
+			}
+
+			errorMessage.value = '';
 			loading.value = true;
 			try {
 				await api.addImage(userId, newImage);
 				newImage.name = '';
 				newImage.imageURL = '';
+				successMessage.value = 'Image added successfully!';
 				const res = await api.getImages(userId as string);
 				userImages.value = res.data;
 			} catch (error) {
@@ -56,6 +67,7 @@ export default defineComponent({
 			loading.value = true;
 			try {
 				await api.deleteImage(userId, imageId);
+				successMessage.value = 'Image deleted successfully!';
 				const res = await api.getImages(userId as string);
 				userImages.value = res.data;
 			} catch (error) {
@@ -69,21 +81,25 @@ export default defineComponent({
 			router.back();
 		};
 
-		return { userImages, userName, newImage, loading, addImage, deleteImage, goBack };
+		return { userImages, userName, newImage, loading, successMessage, errorMessage, addImage, deleteImage, goBack };
 	}
 });
 </script>
 
 <template>
 	<div class="user-images-page">
-		<button class="back-button" @click="goBack">Back</button>
-		<h1 class="header">UserId: {{ userName }}'s Gallery</h1>
-
+		<div class="header-container">
+			<button class="back-button" @click="goBack">Back</button>
+			<h1 class="header">{{ userName }}'s Gallery</h1>
+		</div>
 		<div class="add-image-form">
 			<input v-model="newImage.name" placeholder="Image Name" />
 			<input v-model="newImage.imageURL" placeholder="Image URL" />
 			<button @click="addImage">Add Image</button>
+			<p v-if="successMessage" class="success-message">{{ successMessage }}</p>
+			<p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 		</div>
+
 
 		<div v-if="loading" class="loader">Loading...</div>
 
