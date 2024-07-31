@@ -3,10 +3,12 @@ import { defineComponent, reactive, ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import api from "@/services/service";
 import UserImages from '@/components/UserImages.vue';
+
 interface UserImage {
 	id: string;
 	imageURL: string;
-	userId: string;
+	name: string;
+	updatedAt: string;
 }
 
 export default defineComponent({
@@ -31,13 +33,12 @@ export default defineComponent({
 			try {
 				const res = await api.getImages(userId as string);
 				userImages.value = res.data;
-				userName.value = res.data[0].userId ? res.data[0].userId : "";
+				userName.value = res.data[0]?.userId || "";
 			} catch (error) {
 				console.error(error)
 			} finally {
 				loading.value = false;
 			}
-
 		});
 
 		const addImage = async () => {
@@ -99,7 +100,6 @@ export default defineComponent({
 			<p v-if="successMessage" class="success-message">{{ successMessage }}</p>
 			<p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 		</div>
-
 
 		<div v-if="loading" class="loader">Loading...</div>
 
