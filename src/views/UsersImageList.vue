@@ -28,6 +28,12 @@ export default defineComponent({
 		const successMessage = ref('');
 		const errorMessage = ref('');
 
+		const isValidURL = (url: string) => {
+			// Basic URL validation
+			const trimmedURL = url.trim();
+			return trimmedURL.startsWith('http://') || trimmedURL.startsWith('https://');
+		};
+
 		onMounted(async () => {
 			loading.value = true;
 			try {
@@ -35,7 +41,7 @@ export default defineComponent({
 				userImages.value = res.data;
 				userName.value = res.data[0]?.userId || "";
 			} catch (error) {
-				console.error(error)
+				console.error(error);
 			} finally {
 				loading.value = false;
 			}
@@ -48,7 +54,12 @@ export default defineComponent({
 				return;
 			}
 
-			errorMessage.value = '';
+			if (!isValidURL(newImage.imageURL)) {
+				successMessage.value = '';
+				errorMessage.value = 'Invalid image URL.';
+				return;
+			}
+
 			loading.value = true;
 			try {
 				await api.addImage(userId, newImage);
@@ -57,8 +68,10 @@ export default defineComponent({
 				successMessage.value = 'Image added successfully!';
 				const res = await api.getImages(userId as string);
 				userImages.value = res.data;
+				errorMessage.value = '';
 			} catch (error) {
-				console.error(error)
+				console.error(error);
+				errorMessage.value = 'Failed to add image. Please try again.';
 			} finally {
 				loading.value = false;
 			}
@@ -72,7 +85,8 @@ export default defineComponent({
 				const res = await api.getImages(userId as string);
 				userImages.value = res.data;
 			} catch (error) {
-				console.error(error)
+				console.error(error);
+				errorMessage.value = 'Failed to delete image. Please try again.';
 			} finally {
 				loading.value = false;
 			}
