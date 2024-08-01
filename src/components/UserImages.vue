@@ -80,7 +80,7 @@ export default defineComponent({
     <div>
         <div class="image-gallery">
             <div v-for="image in imagesWithRandomSuffix" :key="image.id" class="image-card">
-                <img :src="image.imageURL + image.randomSuffix" class="gallery-image" @click="openModal(image.imageURL)"
+                <img v-lazyload :data-src="image.imageURL + image.randomSuffix" class="gallery-image" @click="openModal(image.imageURL)"
                     loading="lazy" />
                 <p class="image-name">{{ image.name }}</p>
                 <p class="image-date">{{ formatDate(image.updatedAt) }}</p>
